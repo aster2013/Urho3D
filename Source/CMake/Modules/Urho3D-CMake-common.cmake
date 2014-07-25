@@ -26,6 +26,7 @@ option (ANDROID "Setup build for Android platform")
 option (RASPI "Setup build for Raspberry Pi platform")
 option (IOS "Setup build for iOS platform")
 option (URHO3D_64BIT "Enable 64-bit build")
+option (URHO3D_MAGICPARTICLE "Enable Magic Particle support" FALSE)
 option (URHO3D_ANGELSCRIPT "Enable AngelScript scripting support" TRUE)
 option (URHO3D_LUA "Enable additional Lua scripting support")
 option (URHO3D_LUAJIT "Enable Lua scripting support using LuaJIT (check LuaJIT's CMakeLists.txt for more options)")
@@ -147,6 +148,11 @@ endif ()
 # Add definitions for GLEW
 if (NOT IOS AND NOT ANDROID AND NOT RASPI AND URHO3D_OPENGL)
     add_definitions (-DGLEW_STATIC -DGLEW_NO_GLU)
+endif ()
+
+# Add definition for MagicParticles
+if (URHO3D_MAGICPARTICLE)
+    add_definitions (-DURHO3D_MAGICPARTICLE)
 endif ()
 
 # Add definition for AngelScript

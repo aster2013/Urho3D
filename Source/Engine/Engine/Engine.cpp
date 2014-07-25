@@ -32,6 +32,7 @@
 #include "Input.h"
 #include "InputEvents.h"
 #include "Log.h"
+#include "MagicParticle.h"
 #include "NavigationMesh.h"
 #include "Network.h"
 #include "PackageFile.h"
@@ -146,6 +147,10 @@ bool Engine::Initialize(const VariantMap& parameters)
         // Register graphics library objects explicitly in headless mode to allow them to work without using actual GPU resources
         RegisterGraphicsLibrary(context_);
     }
+
+#ifdef URHO3D_MAGICPARTICLE
+    RegisterMagicParticleLibrary(context_);
+#endif
 
     // 2D graphics library is dependent on 3D graphics library
     RegisterUrho2DLibrary(context_);

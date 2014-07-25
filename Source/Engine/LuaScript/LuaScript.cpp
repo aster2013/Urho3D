@@ -59,6 +59,11 @@ extern int tolua_ResourceLuaAPI_open(lua_State*);
 extern int tolua_SceneLuaAPI_open(lua_State*);
 extern int tolua_UILuaAPI_open(lua_State*);
 extern int tolua_Urho2DLuaAPI_open(lua_State*);
+
+#ifdef URHO3D_MAGICPARTICLE
+    extern int tolua_MagicParticleLuaAPI_open(lua_State*);
+#endif
+
 extern int tolua_LuaScriptLuaAPI_open(lua_State*);
 
 namespace Urho3D
@@ -100,6 +105,11 @@ LuaScript::LuaScript(Context* context) :
     tolua_PhysicsLuaAPI_open(luaState_);
     tolua_UILuaAPI_open(luaState_);
     tolua_Urho2DLuaAPI_open(luaState_);
+
+#ifdef URHO3D_MAGICPARTICLE
+    tolua_MagicParticleLuaAPI_open(luaState_);
+#endif
+
     tolua_LuaScriptLuaAPI_open(luaState_);
 
     coroutineUpdate_ = GetFunction("coroutine.update");

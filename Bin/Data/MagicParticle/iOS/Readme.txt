@@ -1,0 +1,1 @@
+libimagic3d.a is too large, please download it from http://www.astralax.com/downloads.

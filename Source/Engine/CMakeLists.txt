@@ -63,6 +63,9 @@ endif ()
 
 # Define source files
 set (SOURCES Audio Container Core Engine Graphics Input IO Math Navigation Network Physics Resource Scene UI Urho2D)
+if (URHO3D_MAGICPARTICLE)
+    list (APPEND SOURCES MagicParticle)
+endif ()
 if (URHO3D_ANGELSCRIPT)
     list (APPEND SOURCES Script)
 endif ()

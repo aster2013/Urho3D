@@ -38,6 +38,10 @@
 namespace Urho3D
 {
 
+#ifdef URHO3D_MAGICPARTICLE
+extern void RegisterMagicParticleAPI(asIScriptEngine* engine);
+#endif
+
 Script::Script(Context* context) :
     Object(context),
     scriptEngine_(0),
@@ -85,6 +89,11 @@ Script::Script(Context* context) :
     RegisterPhysicsAPI(scriptEngine_);
     RegisterNavigationAPI(scriptEngine_);
     RegisterUrho2DAPI(scriptEngine_);
+
+#ifdef URHO3D_MAGICPARTICLE
+    RegisterMagicParticleAPI(scriptEngine_);
+#endif
+
     RegisterScriptAPI(scriptEngine_);
     RegisterEngineAPI(scriptEngine_);
 
