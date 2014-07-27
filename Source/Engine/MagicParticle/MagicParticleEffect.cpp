@@ -51,6 +51,7 @@ extern T_Magic_SetCleverModeForAtlas Magic_SetCleverModeForAtlas;
 extern T_Magic_SetCurrentFolder Magic_SetCurrentFolder;
 extern T_Magic_SetInterpolationMode Magic_SetInterpolationMode;
 extern T_Magic_SetStartingScaleForAtlas Magic_SetStartingScaleForAtlas;
+extern T_Magic_Stop Magic_Stop;
 extern T_Magic_UnloadEmitter Magic_UnloadEmitter;
 
 namespace Urho3D
@@ -191,6 +192,7 @@ void MagicParticleEffect::LoadEmitter(HM_FILE file, const char* path)
     if (emitter)
     {
         Magic_SetInterpolationMode(emitter, true);
+        Magic_Stop(emitter);
         emitters_.Push(emitter);
     }
 }

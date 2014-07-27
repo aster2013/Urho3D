@@ -347,6 +347,8 @@ void MagicParticleEmitter::SetEffect(MagicParticleEffect* effect, int index)
 
     if (magicEmitter_ > 0)
     {
+        Stop();
+
         Magic_UnloadEmitter(magicEmitter_);
         magicEmitter_ = 0;
     }
@@ -363,6 +365,8 @@ void MagicParticleEmitter::SetEffect(MagicParticleEffect* effect, int index)
             magicEmitter_ = Magic_DuplicateEmitter(emitter);
             // Calculating bounding box every frame
             Magic_SetBBoxPeriod(magicEmitter_, 1);
+
+            Restart();
         }
     }
 }
