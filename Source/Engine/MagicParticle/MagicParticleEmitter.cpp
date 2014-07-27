@@ -80,21 +80,26 @@ struct MParticleVertex
 // Magic particle vertex mask.
 static const unsigned MASK_MPARTICLE_VERTEX = MASK_POSITION | MASK_COLOR | MASK_TEXCOORD1;
 
-static inline Vector3 MagicToVector3(const MAGIC_POSITION& pos)
+static inline Vector3 MagicToUrho3D(const MAGIC_POSITION& pos)
 {
     return Vector3(pos.x, pos.y, pos.z);
 }
 
-static inline MAGIC_POSITION Vector3ToMagic(const Vector3& position)
+static inline Quaternion MagicToUrho3D(const MAGIC_DIRECTION& dir)
 {
-    MAGIC_POSITION magicPosition = { position.x_, position.y_, position.z_ };
-    return magicPosition;
+    return Quaternion(dir.w, dir.x, dir.y, dir.z);
 }
 
-static inline MAGIC_DIRECTION QuaternionToMagic(const Quaternion& rotation)
+static inline MAGIC_POSITION Urho3DToMagic(const Vector3& pos)
 {
-    MAGIC_DIRECTION magicDirection = { rotation.x_, rotation.y_, rotation.z_, rotation.w_ };
-    return magicDirection;
+    MAGIC_POSITION position = { pos.x_, pos.y_, pos.z_ };
+    return position;
+}
+
+static inline MAGIC_DIRECTION Urho3DToMagic(const Quaternion& rot)
+{
+    MAGIC_DIRECTION direction = { rot.x_, rot.y_, rot.z_, rot.w_ };
+    return direction;
 }
 
 MagicParticleEmitter::MagicParticleEmitter(Context* context) :
@@ -150,23 +155,22 @@ void MagicParticleEmitter::Update(const FrameInfo& frame)
         return;
 
     // Set current camera
-    Camera* camera = frame.camera_;
-    Vector3 cameraPos = camera->GetNode()->GetWorldPosition();
-    Vector3 cameraDir = camera->GetNode()->GetWorldDirection();
-    
-    static MAGIC_CAMERA magicCamera;
-    magicCamera.pos = Vector3ToMagic(cameraPos);
-    magicCamera.dir = Vector3ToMagic(cameraDir);
+    MAGIC_CAMERA magicCamera;
+    Node* cameraNode = frame.camera_->GetNode();
+    magicCamera.pos = Urho3DToMagic(cameraNode->GetWorldPosition());
+    magicCamera.dir = Urho3DToMagic(cameraNode->GetWorldDirection());
     Magic_SetCamera(&magicCamera);
 
-    // Set world position
-    MAGIC_POSITION emitterPosition = Vector3ToMagic(node_->GetWorldPosition());
+    // Set emitter position
+    MAGIC_POSITION emitterPosition = Urho3DToMagic(node_->GetWorldPosition());
     Magic_SetEmitterPosition(magicEmitter_, &emitterPosition);
-    Magic_SetScale(magicEmitter_, 0.01f);
 
-    // Set world rotation
-    MAGIC_DIRECTION emitterDirection = QuaternionToMagic(node_->GetWorldRotation());
+    // Set emitter direction
+    MAGIC_DIRECTION emitterDirection = Urho3DToMagic(node_->GetWorldRotation());
     Magic_SetEmitterDirection(magicEmitter_, &emitterDirection);
+
+    // Set emitter scale
+    Magic_SetScale(magicEmitter_, 0.01f * node_->GetWorldScale().x_);
 
     // Update emitter
     Magic_Update(magicEmitter_, 1000.0 * frame.timeStep_);
@@ -281,28 +285,28 @@ void MagicParticleEmitter::UpdateGeometry(const FrameInfo& frame)
                 const MAGIC_PARTICLE_VERTEXES& vertices = particles_[d];
                 unsigned color = vertices.color;
                 
-                // ARGB -> ABGR
+                // Convert ABGR to ARGB
                 unsigned r = (color >> 16) & 0xff;
                 unsigned b = (color      ) & 0xff;
                 color &= 0xff00ff00;
                 color |= (b << 16) + r;
 
-                dest->position_ = MagicToVector3(vertices.vertex1);
+                dest->position_ = MagicToUrho3D(vertices.vertex1);
                 dest->color_ = color;
                 dest->uv_ = Vector2(vertices.u1, vertices.v1);
                 ++dest;
 
-                dest->position_ = MagicToVector3(vertices.vertex2);
+                dest->position_ = MagicToUrho3D(vertices.vertex2);
                 dest->color_ = color;
                 dest->uv_ = Vector2(vertices.u2, vertices.v2);
                 ++dest;
 
-                dest->position_ = MagicToVector3(vertices.vertex3);
+                dest->position_ = MagicToUrho3D(vertices.vertex3);
                 dest->color_ = color;
                 dest->uv_ = Vector2(vertices.u3, vertices.v3);
                 ++dest;
 
-                dest->position_ = MagicToVector3(vertices.vertex4);
+                dest->position_ = MagicToUrho3D(vertices.vertex4);
                 dest->color_ = color;
                 dest->uv_ = Vector2(vertices.u4, vertices.v4);
                 ++dest;
