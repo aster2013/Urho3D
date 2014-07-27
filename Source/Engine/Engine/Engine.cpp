@@ -32,7 +32,9 @@
 #include "Input.h"
 #include "InputEvents.h"
 #include "Log.h"
+#ifdef URHO3D_MAGICPARTICLE
 #include "MagicParticle.h"
+#endif
 #include "NavigationMesh.h"
 #include "Network.h"
 #include "PackageFile.h"
