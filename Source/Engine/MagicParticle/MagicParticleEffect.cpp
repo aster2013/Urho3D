@@ -58,7 +58,8 @@ namespace Urho3D
 {
 
 MagicParticleEffect::MagicParticleEffect(Context* context) :
-    Resource(context)
+    Resource(context),
+    dataSize_(0)
 {
 }
 
@@ -76,28 +77,30 @@ void MagicParticleEffect::RegisterObject(Context* context)
     Magic_SetStartingScaleForAtlas(1.0f);
 }
 
-bool MagicParticleEffect::Load(Deserializer& source)
+bool MagicParticleEffect::BeginLoad(Deserializer& source)
 {
-    for (unsigned i = 0; i < emitters_.Size(); ++i)
-        Magic_UnloadEmitter(emitters_[i]);
-
-    emitters_.Clear();
-
-    textures_.Clear();
-    materials_.Clear();
-
-    unsigned size = source.GetSize();
-    SharedArrayPtr<char> data(new char[size]);
-    if (source.Read(data, size) != size)
+    dataSize_ = source.GetSize();
+    data_ = new char[dataSize_];
+    if (source.Read(data_, dataSize_) != dataSize_)
     {
         LOGERROR("Could not load data");
+        data_ = 0;
         return false;
     }
 
-    HM_FILE file = Magic_OpenFileInMemory(data);
+    return true;
+}
+
+bool MagicParticleEffect::EndLoad()
+{
+    if (!data_)
+        return false;
+
+    HM_FILE file = Magic_OpenFileInMemory(data_);
     if (file <= 0)
     {
         LOGERROR("Could not open file");
+        data_ = 0;
         return false;
     }
 
@@ -110,12 +113,13 @@ bool MagicParticleEffect::Load(Deserializer& source)
         success =LoadStaticAtlas(file);
 
     Magic_CloseFile(file);
+    data_ = 0;
 
     materials_.Resize(textures_.Size() * 2);
-    SetMemoryUse(GetMemoryUse() + size);
+    SetMemoryUse(GetMemoryUse() + dataSize_);
 
     return success;
-}   
+}
 
 unsigned MagicParticleEffect::GetNumEmitters() const
 {

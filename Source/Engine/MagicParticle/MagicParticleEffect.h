@@ -45,8 +45,10 @@ public:
     /// Register object factory.
     static void RegisterObject(Context* context);
 
-    /// Load resource. Return true if successful.
-    virtual bool Load(Deserializer& source);
+    /// Load resource from stream. May be called from a worker thread. Return true if successful.
+    virtual bool BeginLoad(Deserializer& source);
+    /// Finish resource loading. Always called from the main thread. Return true if successful.
+    virtual bool EndLoad();
 
     /// Return number of emitters.
     unsigned GetNumEmitters() const;
@@ -69,6 +71,10 @@ private:
     /// Load static atlas.
     bool LoadStaticAtlas(HM_FILE file);
 
+    /// File data size.
+    unsigned dataSize_;
+    /// File data.
+    SharedArrayPtr<char> data_;
     /// Emitters.
     PODVector<HM_EMITTER> emitters_;
     /// Textures.
