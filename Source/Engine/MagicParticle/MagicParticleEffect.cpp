@@ -108,9 +108,9 @@ bool MagicParticleEffect::EndLoad()
 
     bool success = true;
     if (Magic_HasTextures(file))
-        success = CreateAtlases(file);
+        success = CreateAtlasTexture(file);
     else
-        success =LoadStaticAtlas(file);
+        success = LoadStaticAtlasTexture(file);
 
     Magic_CloseFile(file);
     data_ = 0;
@@ -201,7 +201,7 @@ void MagicParticleEffect::LoadEmitter(HM_FILE file, const char* path)
     }
 }
 
-bool MagicParticleEffect::CreateAtlases(HM_FILE file)
+bool MagicParticleEffect::CreateAtlasTexture(HM_FILE file)
 {
     Magic_CreateAtlasesForEmitters(1024, 1024, emitters_.Size(), &emitters_[0], 1, 0.1f);
 
@@ -216,17 +216,17 @@ bool MagicParticleEffect::CreateAtlases(HM_FILE file)
             break;
 
         case MAGIC_CHANGE_ATLAS_DELETE:
-            assert("Not implement now!");
-            break;
+            LOGERROR("MAGIC_CHANGE_ATLAS_DELETE Not implement");
+            return false;
 
         case MAGIC_CHANGE_ATLAS_LOAD:
-            if (!LoadAtlas(atlas))
+            if (!LoadAtlasData(atlas))
                 return false;
             break;
 
         case MAGIC_CHANGE_ATLAS_CLEAN:
-            assert("Not implement now!");
-            break;
+            LOGERROR("MAGIC_CHANGE_ATLAS_CLEAN Not implement");
+            return false;
 
         default:
             break;
@@ -255,7 +255,7 @@ bool MagicParticleEffect::CreateTexture(const MAGIC_CHANGE_ATLAS& atlas)
     return true;
 }
 
-bool MagicParticleEffect::LoadAtlas(const MAGIC_CHANGE_ATLAS& atlas)
+bool MagicParticleEffect::LoadAtlasData(const MAGIC_CHANGE_ATLAS& atlas)
 {
     SharedPtr<Texture2D> texture = textures_[atlas.index];
     if (!texture)
@@ -275,37 +275,43 @@ bool MagicParticleEffect::LoadAtlas(const MAGIC_CHANGE_ATLAS& atlas)
     else
     {
         // Load image from file
-        String imageFilePath;
+        String filePath;
         String parentPath = GetParentPath(GetName());
         if (parentPath.Empty())
-            imageFilePath = atlas.file;
+            filePath = atlas.file;
         else
-            imageFilePath = parentPath + "/" + atlas.file;
+            filePath = parentPath + "/" + atlas.file;
 
         File file(context_);
-        if (!file.Open(imageFilePath))
+        if (!file.Open(filePath))
         {
-            LOGERROR("Could not open file " + imageFilePath);
+            LOGERROR("Could not open file " + filePath);
             return false;
         }
 
         if (!image.Load(file))
         {
-            LOGERROR("Could not load image " + imageFilePath);
+            LOGERROR("Could not load image from " + filePath);
             return false;
         }
     }
 
+    if (image.GetComponents() != 4)
+    {
+        LOGERROR("Invalid image components");
+        return false;
+    }
+
     if (atlas.width != image.GetWidth() || atlas.height != image.GetHeight())
     {
-        LOGERROR("Atlas scale not support now");
+        LOGERROR("Atlas scale not support");
         return false;
     }
 
     return texture->SetData(0, atlas.x, atlas.y, atlas.width, atlas.height, image.GetData());
 }
 
-bool MagicParticleEffect::LoadStaticAtlas(HM_FILE file)
+bool MagicParticleEffect::LoadStaticAtlasTexture(HM_FILE file)
 {
     int atlasCount = Magic_GetStaticAtlasCount(file);
     if (atlasCount == 0)
@@ -319,16 +325,16 @@ bool MagicParticleEffect::LoadStaticAtlas(HM_FILE file)
     {
         Magic_GetStaticAtlas(file, i, &atlas);
 
-        String textureFilePath;
+        String filePath;
         if (parentPath.Empty())
-            textureFilePath = atlas.file;
+            filePath = atlas.file;
         else
-            textureFilePath = parentPath + "/" + atlas.file;
+            filePath = parentPath + "/" + atlas.file;
 
-        SharedPtr<Texture2D> texture(cache->GetResource<Texture2D>(textureFilePath));
+        SharedPtr<Texture2D> texture(cache->GetResource<Texture2D>(filePath));
         if (!texture)
         {
-            LOGERROR(String("Could not load texture ") + textureFilePath);
+            LOGERROR(String("Could not load texture from ") + filePath);
             return false;
         }
 

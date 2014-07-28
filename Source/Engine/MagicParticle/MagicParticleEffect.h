@@ -62,14 +62,14 @@ private:
     void LoadFolder(HM_FILE file, const char* path);
     /// Load emitter.
     void LoadEmitter(HM_FILE file, const char* path);
-    /// Load atlas.
-    bool CreateAtlases(HM_FILE file);
+    /// Create atlas texture.
+    bool CreateAtlasTexture(HM_FILE file);
     /// Create texture.
     bool CreateTexture(const MAGIC_CHANGE_ATLAS& atlas);
-    /// Load atlas.
-    bool LoadAtlas(const MAGIC_CHANGE_ATLAS& atlas);
-    /// Load static atlas.
-    bool LoadStaticAtlas(HM_FILE file);
+    /// Load atlas data from memory or from file.
+    bool LoadAtlasData(const MAGIC_CHANGE_ATLAS& atlas);
+    /// Load static atlas texture.
+    bool LoadStaticAtlasTexture(HM_FILE file);
 
     /// File data size.
     unsigned dataSize_;
