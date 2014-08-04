@@ -11,7 +11,7 @@ require "LuaScripts/Utilities/Sample"
 
 local endPos = nil
 local currentPath = {}
-
+z
 function Start()
     -- Execute the common startup for samples
     SampleStart()

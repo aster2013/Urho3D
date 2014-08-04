@@ -65,6 +65,10 @@ void PS(
     #endif
     #ifdef ALPHAMAP
         float alphaInput = tex2D(sDiffMap, iTexCoord).a;
+
+        float width = 0.05f;
+        alphaInput = smoothstep(0.5 - width, 0.5 + width, alphaInput);
+
         oColor = float4(diffColor.rgb, diffColor.a * alphaInput);
     #endif
 }
