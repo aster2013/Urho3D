@@ -35,7 +35,7 @@ Credits: [licenses/urho3d/credits.md](licenses/urho3d/credits.md).
 ## Project Authors
 
 The founder of the project is [Lasse Öörni](https://github.com/cadaver). A huge contribution to the project was also made by
-[Yao Wei Tjong](https://github.com/weitjong), [asterj](https://github.com/aster2013)
+[Yao Wei Tjong](https://github.com/weitjong), [XiaoZheng Jian](https://github.com/aster2013)
 and many other developers, a list of which can be viewed [here](https://github.com/urho3d/Urho3D/graphs/contributors).
 
 ---
@@ -68,5 +68,5 @@ Urho3D распространяется под лицензией MIT.
 ## Авторы проекта
 
 Основателем проекта является [Lasse Öörni](https://github.com/cadaver). Огромный вклад в развитие проекта также внесли
-[Yao Wei Tjong](https://github.com/weitjong), [asterj](https://github.com/aster2013)
+[Yao Wei Tjong](https://github.com/weitjong), [XiaoZheng Jian](https://github.com/aster2013)
 и многие другие разработчики, список которых можно посмотреть [тут](https://github.com/urho3d/Urho3D/graphs/contributors).
